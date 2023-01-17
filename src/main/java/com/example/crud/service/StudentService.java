@@ -1,6 +1,9 @@
 package com.example.crud.service;
 
+import com.example.crud.dto.AddStudentRequestDto;
+import com.example.crud.model.Department;
 import com.example.crud.model.Student;
+import com.example.crud.repo.DepartmentRepo;
 import com.example.crud.repo.StudentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,8 +15,17 @@ public class StudentService {
     @Autowired
     private StudentRepo studentRepo;
 
-    public Student saveStudent(Student student){
-        return studentRepo.save(student);
+    @Autowired
+    private DepartmentRepo departmentRepo;
+
+    public Student saveStudent(AddStudentRequestDto student){
+        Department department = departmentRepo.findById(student.getDepartmentId()).orElse(null);
+        Student newStudent = new Student();
+        newStudent.setStudentName(student.getStudentName());
+        newStudent.setStudentRoll(student.getStudentRoll());
+        newStudent.setStudentPhone(student.getStudentPhone());
+//        newStudent.setDepartment(department);
+        return studentRepo.save(newStudent);
     }
 
     public Student getStudent(int id){
@@ -31,7 +43,6 @@ public class StudentService {
 
     public Student updateStudent(Student student) {
         Student existingStudent = studentRepo.findById(student.getStudentId()).orElse(null);
-        existingStudent.setStudentFaculty(student.getStudentFaculty());
         existingStudent.setStudentName(student.getStudentName());
         existingStudent.setStudentPhone(student.getStudentPhone());
         existingStudent.setStudentRoll(student.getStudentRoll());

@@ -3,9 +3,8 @@ package com.example.crud.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,8 +18,11 @@ public class Student {
 
     private String studentName;
 
-    private String studentFaculty;
-
     private String studentPhone;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id",
+            referencedColumnName = "id")
+    private Department department;
 
 }

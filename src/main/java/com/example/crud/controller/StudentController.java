@@ -1,5 +1,6 @@
 package com.example.crud.controller;
 
+import com.example.crud.dto.AddStudentRequestDto;
 import com.example.crud.model.Student;
 import com.example.crud.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ public class StudentController {
     private StudentService studentService;
 
     @PostMapping("/addStudent") //database ma add garne
-    public Student addStudent(@RequestBody Student student){
+    public Student addStudent(@RequestBody AddStudentRequestDto student){
         return studentService.saveStudent(student);
     }
 
