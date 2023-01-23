@@ -6,10 +6,7 @@ import com.example.crud.model.Student;
 import com.example.crud.repo.DepartmentRepo;
 import com.example.crud.repo.StudentRepo;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -70,15 +67,26 @@ public class StudentService {
         List<Student> students = studentRepo.findAll();
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet();
+        sheet.setColumnWidth(0, 4000);
+        sheet.setColumnWidth(1, 4000);
+        sheet.setColumnWidth(2, 4000);
+        sheet.setColumnWidth(3, 4000);
+        sheet.setColumnWidth(4, 4000);
+
         Row row = sheet.createRow(0);
 
-        List<String> headers = Arrays.asList("student_id", "student_name", "student_phone", "department_roll", "department_id");
+        List<String> headers = Arrays.asList("Student Id", "Student Name", "Student Phone", "Roll Number", "Department Id");
 
+        CellStyle headerStyle = workbook.createCellStyle();
+        headerStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         // creating headers for excel
         for (int i = 0; i < headers.size(); i++) {
             Cell cell = row.createCell(i);
             cell.setCellValue(headers.get(i));
+            cell.setCellStyle(headerStyle);
+
         }
 
         // populating data in excel
