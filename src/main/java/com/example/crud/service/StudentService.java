@@ -5,20 +5,37 @@ import com.example.crud.model.Department;
 import com.example.crud.model.Student;
 import com.example.crud.repo.DepartmentRepo;
 import com.example.crud.repo.StudentRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class StudentService {
-    @Autowired
-    private StudentRepo studentRepo;
 
-    @Autowired
-    private DepartmentRepo departmentRepo;
+    private final StudentRepo studentRepo;
 
-    public Student saveStudent(AddStudentRequestDto student){
+    private final DepartmentRepo departmentRepo;
+
+    /*
+         output
+            = (C:\Users\abhir + \ + desktop)
+            = C:\Users\abhir\desktop
+     */
+    private String baseLocation = System.getProperty("user.home") + File.separator + "desktop";
+
+    public Student saveStudent(AddStudentRequestDto student) {
         Department department = departmentRepo.findById(student.getDepartmentId()).orElse(null);
         Student newStudent = new Student();
         newStudent.setStudentName(student.getStudentName());
@@ -28,15 +45,15 @@ public class StudentService {
         return studentRepo.save(newStudent);
     }
 
-    public Student getStudent(int id){
+    public Student getStudent(int id) {
         return studentRepo.findById(id).orElse(null);
     }
 
-    public List<Student> getAllStudents(List<Student> getStudents){
+    public List<Student> getAllStudents() {
         return studentRepo.findAll();
     }
 
-    public String deleteStudent(int id){
+    public String deleteStudent(int id) {
         studentRepo.deleteById(id);
         return "Successfully deleted";
     }
@@ -47,6 +64,53 @@ public class StudentService {
         existingStudent.setStudentPhone(student.getStudentPhone());
         existingStudent.setStudentRoll(student.getStudentRoll());
         return studentRepo.save(existingStudent);
+    }
+
+    public boolean createStudentExcel() throws IOException {
+        List<Student> students = studentRepo.findAll();
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet();
+        Row row = sheet.createRow(0);
+
+        List<String> headers = Arrays.asList("student_id", "student_name", "student_phone", "department_roll", "department_id");
+
+
+        // creating headers for excel
+        for (int i = 0; i < headers.size(); i++) {
+            Cell cell = row.createCell(i);
+            cell.setCellValue(headers.get(i));
+        }
+
+        // populating data in excel
+
+        for (int i = 0; i < students.size(); i++) {
+            Row dataRow = sheet.createRow(i + 1);
+
+            int cellCount = 0;
+            Cell cell1 = dataRow.createCell(cellCount);
+            cell1.setCellValue(students.get(i).getStudentId());
+            Cell cell2 = dataRow.createCell(cellCount + 1);
+            cell2.setCellValue(students.get(i).getStudentName());
+            Cell cell3 = dataRow.createCell(cellCount + 2);
+            cell3.setCellValue(students.get(i).getStudentPhone());
+            Cell cell4 = dataRow.createCell(cellCount + 3);
+            cell4.setCellValue(students.get(i).getStudentRoll());
+            Cell cell5 = dataRow.createCell(cellCount + 4);
+            cell5.setCellValue(
+                    students.get(i).getDepartment() == null
+                            ? -2
+                            : students.get(i).getDepartment().getId()
+            );
+
+        }
+
+        String fileName = "students.xlsx";
+        String fileLocation = baseLocation + File.separator + fileName;
+        File file = new File(fileLocation);
+        workbook.write(new FileOutputStream(file));
+        workbook.close();
+        return true;
+
     }
 
 }

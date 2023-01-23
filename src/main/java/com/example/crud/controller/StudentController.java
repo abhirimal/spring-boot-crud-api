@@ -6,6 +6,9 @@ import com.example.crud.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.util.List;
+
 @RestController
 public class StudentController {
     @Autowired
@@ -21,6 +24,11 @@ public class StudentController {
         return studentService.getStudent(id);
     }
 
+    @GetMapping("/getAllStudent")
+    public List<Student> viewAllStudent(){
+        return studentService.getAllStudents();
+    }
+
     @PutMapping("/updateStudent")
     public Student updateStudentData(@RequestBody Student student){
         return studentService.updateStudent(student);
@@ -29,5 +37,10 @@ public class StudentController {
     @DeleteMapping("/deleteStudent/{id}")
     public String deleteStudent(@PathVariable int id){
         return studentService.deleteStudent(id);
+    }
+
+    @GetMapping("/export/excel")
+    public void exportExcel() throws IOException {
+        studentService.createStudentExcel();
     }
 }
