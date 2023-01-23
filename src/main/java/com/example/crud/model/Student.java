@@ -20,9 +20,9 @@ public class Student {
 
     private String studentPhone;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "department_id",
-            referencedColumnName = "id")
+            referencedColumnName = "id" )
     private Department department;
 
 }

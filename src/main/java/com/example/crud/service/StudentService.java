@@ -24,7 +24,7 @@ public class StudentService {
         newStudent.setStudentName(student.getStudentName());
         newStudent.setStudentRoll(student.getStudentRoll());
         newStudent.setStudentPhone(student.getStudentPhone());
-//        newStudent.setDepartment(department);
+        newStudent.setDepartment(department);
         return studentRepo.save(newStudent);
     }
 
