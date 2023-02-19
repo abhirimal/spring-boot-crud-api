@@ -4,6 +4,7 @@ import com.example.crud.dto.AddStudentRequestDto;
 import com.example.crud.model.Student;
 import com.example.crud.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -25,8 +26,9 @@ public class StudentController {
     }
 
     @GetMapping("/getAllStudent")
-    public List<Student> viewAllStudent(){
-        return studentService.getAllStudents();
+    public Page<Student> viewAllStudent(@RequestParam Integer pageNumber,
+                                        @RequestParam Integer size){
+        return studentService.getAllStudents(pageNumber, size);
     }
 
     @PutMapping("/updateStudent")

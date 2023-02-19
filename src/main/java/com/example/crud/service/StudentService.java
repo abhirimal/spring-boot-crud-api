@@ -9,6 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -46,8 +50,9 @@ public class StudentService {
         return studentRepo.findById(id).orElse(null);
     }
 
-    public List<Student> getAllStudents() {
-        return studentRepo.findAll();
+    public Page<Student> getAllStudents(Integer pageNumber, Integer size) {
+        Pageable pageable = PageRequest.of(pageNumber, size);
+        return studentRepo.findAll(pageable);
     }
 
     public String deleteStudent(int id) {
